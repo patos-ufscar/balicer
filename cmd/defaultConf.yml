@@ -1,0 +1,12 @@
+servers:
+  - port: 4221
+    hosts:
+      - r`.+`
+    locations: # handlers
+      - path: "/"
+        returnType: static
+        return:
+          code: 200
+          Headers:
+            - Content-Type: text/plain
+          body: "Healthy!"
