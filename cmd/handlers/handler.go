@@ -2,14 +2,13 @@ package handlers
 
 import (
 	"fmt"
-	"net"
 
 	"github.com/patos-ufscar/http-web-server-example-go/models"
 )
 
 type Handler interface {
-	ValidPath(host string)									bool
-	Handle(conn net.Conn, req models.HttpRequest)			error
+	ValidPath(host string)						bool
+	Handle(req models.HttpRequest)				(models.HttpResponse, error)
 }
 
 func HandlerFactory(locConf models.HandlerConfig) (Handler, error) {

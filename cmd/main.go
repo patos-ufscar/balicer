@@ -32,6 +32,7 @@ func main() {
 
 	// TODO: fazer a serverConfs retornar só a conf
 	// ai usar diversas factories pra utilizar a conf e iniciar os módulos
+	// TODO: fazer as paths só permitirem continuar se finalizar com "/", mas pensar em param tb
 
 	for _, v := range serverConfs {
 		lis, err := common.Bind(v.Port)

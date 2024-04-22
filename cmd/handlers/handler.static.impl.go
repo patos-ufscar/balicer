@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"net"
 	"net/http"
 	"net/textproto"
 	"strings"
 
 	"github.com/patos-ufscar/http-web-server-example-go/models"
-	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
 
 type HandlerStaticImpl struct {
@@ -41,7 +39,7 @@ func (h *HandlerStaticImpl) ValidPath(host string) bool {
 	return true
 }
 
-func (h *HandlerStaticImpl) Handle(conn net.Conn, req models.HttpRequest) error {
+func (h *HandlerStaticImpl) Handle(req models.HttpRequest) (models.HttpResponse, error) {
 
 	resp := models.NewHttpResponse()
 
@@ -54,9 +52,5 @@ func (h *HandlerStaticImpl) Handle(conn net.Conn, req models.HttpRequest) error 
 	resp.HTTPVersion = "HTTP/1.1"
 	resp.Body = h.config.Return.Body
 
-	rData := resp.DumpResponse()
-
-	// fmt.Println(string(rData))
-
-	return utils.ReplyHTTP(conn, rData)
+	return resp, nil
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/patos-ufscar/http-web-server-example-go/common"
 	"github.com/patos-ufscar/http-web-server-example-go/handlers"
+	"github.com/patos-ufscar/http-web-server-example-go/models"
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
 
@@ -108,16 +109,27 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 		return
 	}
 
-	slog.Debug(fmt.Sprintf("req: %+v", req))
+	// slog.Debug(fmt.Sprintf("req: %+v", req))
 
+	var rep models.HttpResponse
 	for _, v := range s.handlers {
 		if v.ValidPath(req.Host) {
-			err := v.Handle(conn, *req)
+			rep, err = v.Handle(*req)
 			if err != nil {
 				slog.Error(err.Error())
 				return
 			}
 		}
+	}
+
+	// fazer o try except aqui (recover)
+
+	slog.Info(fmt.Sprintf("%s %s %s %d", req.Method, req.RequestURI, req.HTTPVersion, rep.StatusCode))
+
+	err = utils.ReplyHTTP(conn, rep.DumpResponse())
+	if err != nil {
+		slog.Error(err.Error())
+		return
 	}
 	// OLD CODE: using more http package funcs
 	// reader := bufio.NewReader(conn)
