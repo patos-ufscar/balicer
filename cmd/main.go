@@ -30,6 +30,9 @@ func main() {
 		return
 	}
 
+	// TODO: fazer a serverConfs retornar só a conf
+	// ai usar diversas factories pra utilizar a conf e iniciar os módulos
+
 	for _, v := range serverConfs {
 		lis, err := common.Bind(v.Port)
 		if err != nil {

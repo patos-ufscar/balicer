@@ -3,20 +3,19 @@ package models
 import "regexp"
 
 type ServerConfig struct {
-	Port			uint16						`yaml:"port"`
-	HostsRegs		[]regexp.Regexp				`yaml:"hosts"`
-	Locations		[]LocationConfig			`yaml:"locations"`
+	Port			uint16
+	HostsRegs		[]regexp.Regexp
+	Locations		[]HandlerConfig
 }
 
-// TODO: mudar pra HandlerConfig
-type LocationConfig struct {
-	Path			string						`yaml:"path"`
-	ReturnType		string						`yaml:"returnType"`
-	Return			ReturnConfig				`yaml:"return"`
+type HandlerConfig struct {
+	Path			string
+	ReturnType		string
+	Return			ReturnConfig
 }
 
 type ReturnConfig struct {
-	Code			int							`yaml:"code"`
-	Headers			map[string]string			`yaml:"headers"`
-	Body			[]byte						`yaml:"body"`
+	Code			int
+	Headers			map[string]string
+	Body			[]byte
 }

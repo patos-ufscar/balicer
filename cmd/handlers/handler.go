@@ -12,7 +12,7 @@ type Handler interface {
 	Handle(conn net.Conn, req models.HttpRequest)			error
 }
 
-func HandlerFactory(locConf models.LocationConfig) (Handler, error) {
+func HandlerFactory(locConf models.HandlerConfig) (Handler, error) {
 	switch locConf.ReturnType {
 	case "static":
 		return NewHandlerStaticImpl(locConf), nil

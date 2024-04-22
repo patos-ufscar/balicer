@@ -11,16 +11,16 @@ import (
 )
 
 type HandlerStaticImpl struct {
-	config				models.LocationConfig
+	config				models.HandlerConfig
 }
 
-func NewHandlerStaticImpl(config models.LocationConfig) Handler {
+func NewHandlerStaticImpl(config models.HandlerConfig) Handler {
 	headers := make(map[string]string)
 	headers["Content-Type"] = "text/html"
 	headers["Server"] = "balicer"
 
 	return &HandlerStaticImpl{
-		config: models.LocationConfig{
+		config: models.HandlerConfig{
 			Path: "/",
 			ReturnType: "static",
 			Return: models.ReturnConfig{

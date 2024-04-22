@@ -41,9 +41,9 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 
 	confs := []models.ServerConfig{}
 	for _, v := range conf.Servers {
-		locs := []models.LocationConfig{}
+		locs := []models.HandlerConfig{}
 		for _, loc := range v.Locations {
-			locs = append(locs, models.LocationConfig{
+			locs = append(locs, models.HandlerConfig{
 				Path: loc.Path,
 				ReturnType: loc.ReturnType,
 				Return: models.ReturnConfig{
