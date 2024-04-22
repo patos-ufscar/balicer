@@ -28,10 +28,32 @@ func ParseHeader(header string) (*http.Request, error) {
 	return nil, nil
 }
 
+func ParseBaseRequest(requestBytes []byte) (*models.HttpRequest, error) {
+	httpReqFrame := models.NewHttpRequest()
+
+	// fmt.Println(string(requestBytes))
+
+	lines := strings.Split(string(requestBytes), "\r\n")
+	// request := [][]string{}
+	for i, v := range lines {
+		if i == 0 {
+			words := strings.Split(v, " ")
+			httpReqFrame.Method = words[0]
+			httpReqFrame.RequestURI = words[1]
+			httpReqFrame.HTTPVersion = words[2]
+		} else if i == 1 {
+			words := strings.Split(v, " ")
+			httpReqFrame.Host = words[1]
+		}
+	}
+
+	return &httpReqFrame, nil
+}
+
 func ParseHttpRequest(requestBytes []byte) (*models.HttpRequest, error) {
 	httpReqFrame := models.NewHttpRequest()
 
-	fmt.Println(string(requestBytes))
+	// fmt.Println(string(requestBytes))
 
 	lines := strings.Split(string(requestBytes), "\r\n")
 	// request := [][]string{}

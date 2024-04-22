@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/patos-ufscar/http-web-server-example-go/cli"
 	"github.com/patos-ufscar/http-web-server-example-go/common"
 	"github.com/patos-ufscar/http-web-server-example-go/handlers"
 	"github.com/patos-ufscar/http-web-server-example-go/servers"
@@ -23,10 +24,13 @@ func init() {
 
 func main() {
 	utils.InitSlogger()
-	serverConfs := common.ParseConfig(configPath)
+	serverConfs, err := cli.ParseConfig(configPath)
+	if err != nil {
+		slog.Error("error on parsing")
+		return
+	}
 
 	for _, v := range serverConfs {
-
 		lis, err := common.Bind(v.Port)
 		if err != nil {
 			slog.Error(fmt.Sprintf("Could not bind to port: %d", v.Port))
@@ -34,7 +38,9 @@ func main() {
 		}
 
 		hs := []handlers.Handler{}
-		hs = append(hs, handlers.NewHandlerStaticImpl())
+		for _, vv := range v.Locations {
+			hs = append(hs, handlers.NewHandlerStaticImpl(vv))
+		}
 
 		server := servers.NewServer(
 			v.Port,

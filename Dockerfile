@@ -1,7 +1,7 @@
 #### - DEV - ####
 FROM golang:1.22.0 AS dev
 
-WORKDIR /app
+WORKDIR /cmd
 
 COPY cmd/go.mod go.mod
 COPY cmd/go.sum go.sum
@@ -28,7 +28,7 @@ CMD ["go", "test", "-v", "./..."]
 #### - BUILDER - ####
 FROM golang:1.22.0 AS builder
 
-WORKDIR /app
+WORKDIR /cmd
 
 COPY cmd/go.mod go.mod
 COPY cmd/go.sum go.sum
@@ -45,7 +45,7 @@ FROM alpine:3.19.1 as server
 RUN apk add --no-cache gcompat=1.1.0-r4 libstdc++=13.2.1_git20231014-r0
 # RUN apk add --no-cache gcompat libstdc++
 
-WORKDIR /app
+WORKDIR /cmd
 
 COPY --from=builder /bin/main ./main
 

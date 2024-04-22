@@ -1,14 +1,21 @@
-package models
+package cli
 
-import "regexp"
+type Conf struct {
+	Global			Global						`yaml:"global"`
+	Servers			[]ServerConfig				`yaml:"servers"`
+}
+
+type Global struct {
+	LogLevel		string						`yaml:"logLevel"`
+	BufferSize		string						`yaml:"bufferSize"`
+}
 
 type ServerConfig struct {
 	Port			uint16						`yaml:"port"`
-	HostsRegs		[]regexp.Regexp				`yaml:"hosts"`
+	HostsRegs		[]string					`yaml:"hosts"`
 	Locations		[]LocationConfig			`yaml:"locations"`
 }
 
-// TODO: mudar pra HandlerConfig
 type LocationConfig struct {
 	Path			string						`yaml:"path"`
 	ReturnType		string						`yaml:"returnType"`
@@ -18,5 +25,5 @@ type LocationConfig struct {
 type ReturnConfig struct {
 	Code			int							`yaml:"code"`
 	Headers			map[string]string			`yaml:"headers"`
-	Body			[]byte						`yaml:"body"`
+	Body			string						`yaml:"body"`
 }

@@ -8,14 +8,14 @@ import (
 )
 
 type Handler interface {
-	ValidHost(host string)									bool
+	ValidPath(host string)									bool
 	Handle(conn net.Conn, req models.HttpRequest)			error
 }
 
 func HandlerFactory(locConf models.LocationConfig) (Handler, error) {
 	switch locConf.ReturnType {
 	case "static":
-		return &HandlerStaticImpl{}, nil
+		return NewHandlerStaticImpl(locConf), nil
 	}
 
 	// return nil, errors.New("not yet implemented")

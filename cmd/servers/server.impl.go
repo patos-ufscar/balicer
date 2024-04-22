@@ -26,6 +26,17 @@ func NewServer(port uint16, hostsRegs []regexp.Regexp, handlers []handlers.Handl
 	}
 }
 
+func (s *ServerImpl) ValidHost(host string) bool {
+
+	for _, v := range s.hostsRegs {
+		if v.Match([]byte(host)) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (s *ServerImpl) Bind(port uint16) (*net.Listener, error) {
 	l, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", port))
 	if err != nil {
@@ -81,7 +92,18 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 		return
 	}
 
-	req, err := common.ParseHttpRequest(readBuffer)
+	req, err := common.ParseBaseRequest(readBuffer)
+	if err != nil {
+		return
+	}
+
+	if !s.ValidHost(req.Host) {
+		return
+	}
+
+	// TODO: Here would be TLS
+
+	req, err = common.ParseHttpRequest(readBuffer)
 	if err != nil {
 		return
 	}
@@ -89,7 +111,7 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 	slog.Debug(fmt.Sprintf("req: %+v", req))
 
 	for _, v := range s.handlers {
-		if v.ValidHost(req.Host) {
+		if v.ValidPath(req.Host) {
 			err := v.Handle(conn, *req)
 			if err != nil {
 				slog.Error(err.Error())

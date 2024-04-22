@@ -16,6 +16,7 @@ servers:
             - Content-Type: text/html
             - Server: balicer
           body: "<h1>quack!</h1>"
+
       # - path: "/lb"
       #   returnType: loadBalancing
       #   return:

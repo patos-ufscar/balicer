@@ -14,9 +14,7 @@ type HandlerStaticImpl struct {
 	config				models.LocationConfig
 }
 
-// func NewHandlerStaticImpl(config models.LocationConfig) Handler {
-func NewHandlerStaticImpl() Handler {
-
+func NewHandlerStaticImpl(config models.LocationConfig) Handler {
 	headers := make(map[string]string)
 	headers["Content-Type"] = "text/html"
 	headers["Server"] = "balicer"
@@ -34,7 +32,7 @@ func NewHandlerStaticImpl() Handler {
 	}
 }
 
-func (h *HandlerStaticImpl) ValidHost(host string) bool {
+func (h *HandlerStaticImpl) ValidPath(host string) bool {
 
 	if strings.HasPrefix(host, h.config.Path) {
 		return true
