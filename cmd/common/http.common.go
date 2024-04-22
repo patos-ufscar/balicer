@@ -1,12 +1,11 @@
 package common
 
 import (
-	"errors"
 	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
-	"strconv"
+	"net/textproto"
 	"strings"
 
 	"github.com/patos-ufscar/http-web-server-example-go/models"
@@ -29,8 +28,10 @@ func ParseHeader(header string) (*http.Request, error) {
 	return nil, nil
 }
 
-func ParseHttpRequestFrame(requestBytes []byte) (*models.HttpRequestFrame, error) {
-	var httpReqFrame models.HttpRequestFrame
+func ParseHttpRequest(requestBytes []byte) (*models.HttpRequest, error) {
+	httpReqFrame := models.NewHttpRequest()
+
+	fmt.Println(string(requestBytes))
 
 	lines := strings.Split(string(requestBytes), "\r\n")
 	// request := [][]string{}
@@ -40,36 +41,45 @@ func ParseHttpRequestFrame(requestBytes []byte) (*models.HttpRequestFrame, error
 			httpReqFrame.Method = words[0]
 			httpReqFrame.RequestURI = words[1]
 			httpReqFrame.HTTPVersion = words[2]
+		} else if i == 1 {
+			words := strings.Split(v, " ")
+			httpReqFrame.Host = words[1]
 		} else {
-			words := strings.SplitN(v, " ", 1)
+			words := strings.SplitN(v, ": ", 2)
+			if len(words[0]) == len(v) {
+				continue
+			}
 
-			parseRequestLine(&httpReqFrame, words)
+			httpReqFrame.Headers[textproto.CanonicalMIMEHeaderKey(words[0])] = words[1]
+			// parseRequestLine(&httpReqFrame, words)
 		}
-		// request = append(request, words)
 	}
 
 	return &httpReqFrame, nil
 }
 
-func parseRequestLine(frame *models.HttpRequestFrame, words []string) error {
+// func parseRequestLine(frame *models.HttpRequest, words []string) error {
 
-	switch words[0] {
-	case "Content-Type":
-		frame.RequestHeaders.ContentType = words[1]
-	case "Content-Length":
-		val, err := strconv.ParseUint(words[1], 10, 64)
-		if err != nil {
-			return errors.New("could not convert to uint64")
-		}
-		frame.RequestHeaders.ContentLength = val
-	case "Content-Encoding":
-		frame.RequestHeaders.ContentEncoding = words[1]
-	case "Content-Language":
-		frame.RequestHeaders.ContentLanguage = words[1]
+// 	// textproto.CanonicalMIMEHeaderKey(words[0])
+// 	frame.Headers[textproto.CanonicalMIMEHeaderKey(words[0])] = words[1]
 
-	default:
-		return errors.New("could not find match")
-	}
+// 	// switch words[0] {
+// 	// case "Content-Type":
+// 	// 	frame.RequestHeaders.ContentType = words[1]
+// 	// case "Content-Length":
+// 	// 	val, err := strconv.ParseUint(words[1], 10, 64)
+// 	// 	if err != nil {
+// 	// 		return errors.New("could not convert to uint64")
+// 	// 	}
+// 	// 	frame.RequestHeaders.ContentLength = val
+// 	// case "Content-Encoding":
+// 	// 	frame.RequestHeaders.ContentEncoding = words[1]
+// 	// case "Content-Language":
+// 	// 	frame.RequestHeaders.ContentLanguage = words[1]
 
-	return nil
-}
+// 	// default:
+// 	// 	return errors.New("could not find match")
+// 	// }
+
+// 	return nil
+// }

@@ -34,6 +34,10 @@ func ReplyString(conn net.Conn, msg string) error {
 	return ReplyHTTP(conn, []byte(response))
 }
 
+// func ReplyResponse(conn net.Conn, resp models.HttpResponse) error {
+	
+// }
+
 func ReplyOctetStream(conn net.Conn, msg string) error {
 	response := "HTTP/1.1 200 OK\r\n"
 	response += "Content-Type: application/octet-stream\r\n"

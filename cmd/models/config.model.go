@@ -15,7 +15,7 @@ type LocationConfig struct {
 }
 
 type ReturnConfig struct {
-	Code			uint16						`yaml:"code"`
+	Code			int							`yaml:"code"`
 	Headers			map[string]string			`yaml:"headers"`
 	Body			[]byte						`yaml:"body"`
 }

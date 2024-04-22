@@ -2,38 +2,63 @@ package handlers
 
 import (
 	"net"
+	"net/http"
+	"net/textproto"
+	"strings"
 
 	"github.com/patos-ufscar/http-web-server-example-go/models"
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
 
 type HandlerStaticImpl struct {
-	// config				models.HandlerConfig
+	config				models.LocationConfig
 }
 
 // func NewHandlerStaticImpl(config models.LocationConfig) Handler {
 func NewHandlerStaticImpl() Handler {
+
+	headers := make(map[string]string)
+	headers["Content-Type"] = "text/html"
+	headers["Server"] = "balicer"
+
 	return &HandlerStaticImpl{
-		// config: config,
+		config: models.LocationConfig{
+			Path: "/",
+			ReturnType: "static",
+			Return: models.ReturnConfig{
+				Code: 200,
+				Headers: headers,
+				Body: []byte("<h1>quack!</h1>"),
+			},
+		},
 	}
 }
 
 func (h *HandlerStaticImpl) ValidHost(host string) bool {
 
-	return true
-	// for _, v := range h.config.HostsRegs {
-	// 	match := v.FindString(host)
-	// 	if match != "" {
-	// 		return true
-	// 	}
-	// }
+	if strings.HasPrefix(host, h.config.Path) {
+		return true
+	}
 
-	// return false
+	return true
 }
 
-func (h *HandlerStaticImpl) Handle(conn net.Conn, req models.HttpRequestFrame) error {
+func (h *HandlerStaticImpl) Handle(conn net.Conn, req models.HttpRequest) error {
 
-	return utils.ReplyString(conn, "OK")
+	resp := models.NewHttpResponse()
 
-	// return nil
+	for k, v := range h.config.Return.Headers {
+		resp.Headers[textproto.CanonicalMIMEHeaderKey(k)] = v
+	}
+
+	resp.StatusCode = h.config.Return.Code
+	resp.StatusText = http.StatusText(h.config.Return.Code)
+	resp.HTTPVersion = "HTTP/1.1"
+	resp.Body = h.config.Return.Body
+
+	rData := resp.DumpResponse()
+
+	// fmt.Println(string(rData))
+
+	return utils.ReplyHTTP(conn, rData)
 }

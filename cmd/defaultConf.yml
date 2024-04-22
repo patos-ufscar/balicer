@@ -1,12 +1,25 @@
+global:
+  logLevel: DEBUG
+  bufferSize: 8k
+
 servers:
   - port: 4221
     hosts:
       - r`.+`
-    locations: # handlers
+      - "*"
+    locations: # each location is a handlers
       - path: "/"
         returnType: static
         return:
           code: 200
           Headers:
-            - Content-Type: text/plain
-          body: "Healthy!"
+            - Content-Type: text/html
+            - Server: balicer
+          body: "<h1>quack!</h1>"
+      # - path: "/lb"
+      #   returnType: loadBalancing
+      #   return:
+      #     forwardList:
+      #       - 0.0.0.0:3333
+      #       - 0.0.0.0:5555
+      #       - 0.0.0.0:7777

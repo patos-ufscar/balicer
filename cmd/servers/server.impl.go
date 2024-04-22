@@ -2,10 +2,12 @@ package servers
 
 import (
 	"fmt"
+	"io"
 	"log/slog"
 	"net"
 	"regexp"
 
+	"github.com/patos-ufscar/http-web-server-example-go/common"
 	"github.com/patos-ufscar/http-web-server-example-go/handlers"
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
@@ -58,20 +60,48 @@ func (s *ServerImpl) Serve(lis net.Listener) {
 					}
 				}
 			}(conn)
-			defer conn.Close()
 
-			utils.ReplyString(conn, "OK")
-
-			// iterate over handlers
-
-			// Getting the handler to handle
-			// rep, err := handlers.HandleGlobal(conn, config)
-			// if err != nil {
-			// 	panic(err)
-			// } else {
-			// 	slog.Info(fmt.Sprintf("handled: %s", string(rep)))
-			// }
+			go s.HandleConnection(conn)
 
 		}(conn)
 	}
+}
+
+func (s *ServerImpl) HandleConnection(conn net.Conn) {
+	defer conn.Close()
+
+	readBuffer := make([]byte, 8 * 1<<10)
+	_, err := conn.Read(readBuffer)
+	if err != nil {
+		if err == io.EOF {
+			slog.Warn("Connection closed by the server")
+		} else {
+			slog.Error(err.Error())
+		}
+		return
+	}
+
+	req, err := common.ParseHttpRequest(readBuffer)
+	if err != nil {
+		return
+	}
+
+	slog.Debug(fmt.Sprintf("req: %+v", req))
+
+	for _, v := range s.handlers {
+		if v.ValidHost(req.Host) {
+			err := v.Handle(conn, *req)
+			if err != nil {
+				slog.Error(err.Error())
+				return
+			}
+		}
+	}
+	// OLD CODE: using more http package funcs
+	// reader := bufio.NewReader(conn)
+	// req, err := http.ReadRequest(reader)
+	// if err != nil {
+	// 	slog.Error(err.Error())
+	// 	return
+	// }
 }
