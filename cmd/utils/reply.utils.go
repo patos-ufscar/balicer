@@ -1,19 +1,19 @@
 package utils
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 )
 
 func ReplyHTTP(conn net.Conn, rep []byte) error {
 	// httpResponse := "HTTP/1.1 200 OK\r\n\r\n"
-	nBytesSent, err := conn.Write(rep)
+	// nBytesSent, err := conn.Write(rep)
+	_, err := conn.Write(rep)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Sent %d bytes to client (expected: %d)\n", nBytesSent, len(rep))
+	// fmt.Printf("Sent %d bytes to client (expected: %d)\n", nBytesSent, len(rep))
 
 	return nil
 }
