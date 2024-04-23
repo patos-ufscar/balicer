@@ -29,7 +29,7 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 		return nil, err
 	}
 
-	fmt.Println(conf)
+	// fmt.Println(conf)
 
 	hostRegs := []regexp.Regexp{}
 	for _, v := range conf.Servers[0].HostsRegs {

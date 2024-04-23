@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"log/slog"
 	"net"
 	"os"
 	"strconv"
@@ -16,7 +17,7 @@ func HandleGlobal(conn net.Conn, directory string) ([]byte, error) {
 	// readBuffer := [8 * (1 << 10)]byte{}
 	_, err := conn.Read(readBuffer)
 	if err != nil {
-		fmt.Println("Error reading request: ", err.Error())
+		slog.Error(fmt.Sprintf("Error reading request: %s", err.Error()))
 		os.Exit(1)
 	}
 

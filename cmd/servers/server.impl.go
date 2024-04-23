@@ -113,7 +113,7 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 
 	var rep models.HttpResponse
 	for _, v := range s.handlers {
-		if v.ValidPath(req.Host) {
+		if v.ValidPath(req.RequestURI) {
 			rep, err = v.Handle(*req)
 			if err != nil {
 				slog.Error(err.Error())

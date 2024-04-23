@@ -25,9 +25,8 @@ func NewHandlerStaticImpl(path string, ret models.ReturnStatic) Handler {
 	}
 }
 
-func (h *HandlerStaticImpl) ValidPath(host string) bool {
-
-	return strings.HasPrefix(host, h.Path)
+func (h *HandlerStaticImpl) ValidPath(path string) bool {
+	return strings.HasPrefix(path, h.Path)
 }
 
 func (h *HandlerStaticImpl) Handle(req models.HttpRequest) (models.HttpResponse, error) {
