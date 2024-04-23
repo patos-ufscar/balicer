@@ -31,18 +31,19 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 
 	// fmt.Println(conf)
 
-	hostRegs := []regexp.Regexp{}
-	for _, v := range conf.Servers[0].HostsRegs {
-		r, err := regexp.Compile(common.ExtractRegExpFromHostStr(v))
-		if err != nil {
-			slog.Error(err.Error())
-			return nil, err
-		}
-		hostRegs = append(hostRegs, *r)
-	}
-
 	confs := []models.ServerConfig{}
 	for _, v := range conf.Servers {
+		hostRegs := []regexp.Regexp{}
+		for _, v := range v.HostsRegs {
+			// fmt.Println(v)
+			r, err := regexp.Compile(common.ExtractRegExpFromHostStr(v))
+			if err != nil {
+				slog.Error(err.Error())
+				return nil, err
+			}
+			hostRegs = append(hostRegs, *r)
+		}
+
 		locs := []models.HandlerConfig{}
 		for _, loc := range v.Locations {
 			locs = append(locs, models.HandlerConfig{

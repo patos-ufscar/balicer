@@ -30,7 +30,8 @@ func NewServer(port uint16, hostsRegs []regexp.Regexp, handlers []handlers.Handl
 func (s *ServerImpl) ValidHost(host string) bool {
 
 	for _, v := range s.hostsRegs {
-		if v.Match([]byte(host)) {
+		// fmt.Println(v.MatchString(host))
+		if v.MatchString(host) {
 			return true
 		}
 	}
@@ -109,7 +110,7 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 		return
 	}
 
-	// slog.Debug(fmt.Sprintf("req: %+v", req))
+	slog.Debug(fmt.Sprintf("req: %+v", req))
 
 	var rep models.HttpResponse
 	for _, v := range s.handlers {

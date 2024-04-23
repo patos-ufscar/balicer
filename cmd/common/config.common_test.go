@@ -18,7 +18,7 @@ func TestExtractRegExpFromHostStr(t *testing.T) {
 	}
 
 	r = common.ExtractRegExpFromHostStr("abc.example.com")
-	if r != "abc\\.example\\.com" {
-		t.Errorf("common.ExtractRegExpFromHostStr(\"abc.example.com\") = \"%s\"; want \"abc\\.example\\.com\"", r)
+	if r != "^abc\\.example\\.com$" {
+		t.Errorf("common.ExtractRegExpFromHostStr(\"abc.example.com\") = \"%s\"; want \"^abc\\.example\\.com\"$", r)
 	}
 }

@@ -27,7 +27,8 @@ servers:
 
   - port: 4222
     hosts:
-      - r`.+`
+      - r`^127\..+`
+      # - r`.+`
       # - "*"
     locations: # each location is a handlers
       - path: "/"
