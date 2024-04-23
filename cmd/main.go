@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/patos-ufscar/http-web-server-example-go/cli"
 	"github.com/patos-ufscar/http-web-server-example-go/common"
@@ -61,9 +60,9 @@ func main() {
 		go server.Serve(*lis)
 	}
 
-	for {
-		time.Sleep(time.Second)
-	}
+	hangChannel := make(chan int)
+
+	<-hangChannel
 }
 
 // package main

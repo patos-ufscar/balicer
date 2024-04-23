@@ -50,11 +50,6 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 				Path: loc.Path,
 				ReturnType: loc.ReturnType,
 				Return: loc.Return,
-				// models.ReturnConfig{
-				// 	Code: loc.Return.Code,
-				// 	Headers: loc.Return.Headers,
-				// 	Body: []byte(loc.Return.Body),
-				// },
 			})
 		}
 		confs = append(confs, models.ServerConfig{

@@ -30,7 +30,7 @@ servers:
       - r`^127\..+`
       # - r`.+`
       # - "*"
-    locations: # each location is a handlers
+    locations: # each location is a handler
       - path: "/"
         returnType: static
         return:
@@ -38,7 +38,7 @@ servers:
           headers:
             Content-Type: text/html
             Server: balicer
-          body: "<h1>quack quack!</h1>"
+          body: "<h2>quack quack!</h2>"
 
       # - path: "/lb"
       #   returnType: loadBalancing
