@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"regexp"
@@ -27,7 +29,7 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 		return nil, err
 	}
 
-	// fmt.Println(conf)
+	fmt.Println(conf)
 
 	hostRegs := []regexp.Regexp{}
 	for _, v := range conf.Servers[0].HostsRegs {
@@ -46,11 +48,12 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 			locs = append(locs, models.HandlerConfig{
 				Path: loc.Path,
 				ReturnType: loc.ReturnType,
-				Return: models.ReturnConfig{
-					Code: loc.Return.Code,
-					Headers: loc.Return.Headers,
-					Body: []byte(loc.Return.Body),
-				},
+				Return: loc.Return,
+				// models.ReturnConfig{
+				// 	Code: loc.Return.Code,
+				// 	Headers: loc.Return.Headers,
+				// 	Body: []byte(loc.Return.Body),
+				// },
 			})
 		}
 		confs = append(confs, models.ServerConfig{
@@ -61,4 +64,56 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 	}
 
 	return confs, nil
+}
+
+func ParseStaticReturn(ret map[string]interface{}) (*models.ReturnStatic, error) {
+
+	code, ok := ret["code"].(int)
+	if !ok {
+		return nil, errors.New("could not convert re.code to int")
+	}
+
+	headers, err := ConvertMap(ret["headers"])
+	if err != nil {
+		return nil, errors.New("could not convert re.headers to map[string]string")
+	}
+
+	body, ok := ret["body"].(string)
+	if !ok {
+		return nil, errors.New("could not convert re.body to string")
+	}
+
+	staticRet := models.ReturnStatic{
+		Code: code,
+		Headers: headers,
+		Body: []byte(body),
+	}
+
+	
+	return &staticRet, nil
+}
+
+func ConvertMap(input interface{}) (map[string]string, error) {
+    result := make(map[string]string)
+
+	inputMap, ok := input.(map[interface{}]interface{})
+	if !ok {
+		return nil, errors.New("could not convert input to map[interface{}]interface{}")
+	}
+
+    for key, value := range inputMap {
+        // Perform type assertions
+        strKey, okKey := key.(string)
+        strValue, okValue := value.(string)
+
+        // Check if both key and value are strings
+        if okKey && okValue {
+            result[strKey] = strValue
+        } else {
+            // If either key or value is not a string, return an error
+            return nil, fmt.Errorf("key or value is not a string")
+        }
+    }
+
+    return result, nil
 }

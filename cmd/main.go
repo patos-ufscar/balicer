@@ -42,8 +42,13 @@ func main() {
 		}
 
 		hs := []handlers.Handler{}
-		for _, vv := range v.Locations {
-			hs = append(hs, handlers.NewHandlerStaticImpl(vv))
+		for _, locConf := range v.Locations {
+			h, err := handlers.HandlerFactory(locConf)
+			if err != nil {
+				slog.Error(err.Error())
+				return
+			}
+			hs = append(hs, h)
 		}
 
 		server := servers.NewServer(

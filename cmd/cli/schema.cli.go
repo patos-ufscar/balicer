@@ -2,7 +2,7 @@ package cli
 
 type Conf struct {
 	Global			Global						`yaml:"global"`
-	Servers			[]ServerConfig				`yaml:"servers"`
+	Servers			[]ServerConfigInput				`yaml:"servers"`
 }
 
 type Global struct {
@@ -10,19 +10,19 @@ type Global struct {
 	BufferSize		string						`yaml:"bufferSize"`
 }
 
-type ServerConfig struct {
+type ServerConfigInput struct {
 	Port			uint16						`yaml:"port"`
 	HostsRegs		[]string					`yaml:"hosts"`
-	Locations		[]LocationConfig			`yaml:"locations"`
+	Locations		[]LocationConfigInput			`yaml:"locations"`
 }
 
-type LocationConfig struct {
+type LocationConfigInput struct {
 	Path			string						`yaml:"path"`
 	ReturnType		string						`yaml:"returnType"`
-	Return			ReturnConfig				`yaml:"return"`
+	Return			map[string]interface{}		`yaml:"return"`
 }
 
-type ReturnConfig struct {
+type ReturnStaticConfig struct {
 	Code			int							`yaml:"code"`
 	Headers			map[string]string			`yaml:"headers"`
 	Body			string						`yaml:"body"`

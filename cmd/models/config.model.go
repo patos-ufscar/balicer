@@ -11,10 +11,10 @@ type ServerConfig struct {
 type HandlerConfig struct {
 	Path			string
 	ReturnType		string
-	Return			ReturnConfig
+	Return			map[string]interface{}
 }
 
-type ReturnConfig struct {
+type ReturnStatic struct {
 	Code			int
 	Headers			map[string]string
 	Body			[]byte

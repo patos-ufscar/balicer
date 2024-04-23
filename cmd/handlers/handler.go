@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/patos-ufscar/http-web-server-example-go/cli"
 	"github.com/patos-ufscar/http-web-server-example-go/models"
 )
 
@@ -14,7 +15,14 @@ type Handler interface {
 func HandlerFactory(locConf models.HandlerConfig) (Handler, error) {
 	switch locConf.ReturnType {
 	case "static":
-		return NewHandlerStaticImpl(locConf), nil
+		ret, err := cli.ParseStaticReturn(locConf.Return)
+		if err != nil {
+			return nil, err
+		}
+		return NewHandlerStaticImpl(
+			locConf.Path,
+			*ret,
+		), nil
 	}
 
 	// return nil, errors.New("not yet implemented")

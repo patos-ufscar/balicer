@@ -9,30 +9,25 @@ import (
 )
 
 type HandlerStaticImpl struct {
-	config				models.HandlerConfig
+	Path					string
+	StatusCode				int
+	Headers					map[string]string
+	Body					[]byte
 }
 
-func NewHandlerStaticImpl(config models.HandlerConfig) Handler {
-	headers := make(map[string]string)
-	headers["Content-Type"] = "text/html"
-	headers["Server"] = "balicer"
-
+func NewHandlerStaticImpl(path string, ret models.ReturnStatic) Handler {
+	// headers := make(map[string]string)
 	return &HandlerStaticImpl{
-		config: models.HandlerConfig{
-			Path: "/",
-			ReturnType: "static",
-			Return: models.ReturnConfig{
-				Code: 200,
-				Headers: headers,
-				Body: []byte("<h1>quack!</h1>"),
-			},
-		},
+		Path: path,
+		StatusCode: ret.Code,
+		Headers: ret.Headers,
+		Body: ret.Body,
 	}
 }
 
 func (h *HandlerStaticImpl) ValidPath(host string) bool {
 
-	if strings.HasPrefix(host, h.config.Path) {
+	if strings.HasPrefix(host, h.Path) {
 		return true
 	}
 
@@ -43,14 +38,14 @@ func (h *HandlerStaticImpl) Handle(req models.HttpRequest) (models.HttpResponse,
 
 	resp := models.NewHttpResponse()
 
-	for k, v := range h.config.Return.Headers {
+	for k, v := range h.Headers {
 		resp.Headers[textproto.CanonicalMIMEHeaderKey(k)] = v
 	}
 
-	resp.StatusCode = h.config.Return.Code
-	resp.StatusText = http.StatusText(h.config.Return.Code)
+	resp.StatusCode = h.StatusCode
+	resp.StatusText = http.StatusText(h.StatusCode)
 	resp.HTTPVersion = "HTTP/1.1"
-	resp.Body = h.config.Return.Body
+	resp.Body = h.Body
 
 	return resp, nil
 }

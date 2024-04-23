@@ -6,15 +6,15 @@ servers:
   - port: 4221
     hosts:
       - r`.+`
-      - "*"
+      # - "*"
     locations: # each location is a handlers
       - path: "/"
         returnType: static
         return:
           code: 200
-          Headers:
-            - Content-Type: text/html
-            - Server: balicer
+          headers:
+            Content-Type: text/html
+            Server: balicer
           body: "<h1>quack!</h1>"
 
       # - path: "/lb"
