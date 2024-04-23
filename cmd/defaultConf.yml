@@ -7,7 +7,7 @@ servers:
     hosts:
       - r`.+`
       # - "*"
-    locations: # each location is a handlers
+    locations: # each location is a handler
       - path: "/"
         returnType: static
         return:
@@ -16,6 +16,28 @@ servers:
             Content-Type: text/html
             Server: balicer
           body: "<h1>quack!</h1>"
+      - path: "/out"
+        returnType: static
+        return:
+          code: 200
+          headers:
+            Content-Type: text/html
+            Server: balicer
+          body: "<h1>tchau!</h1>"
+
+  - port: 4222
+    hosts:
+      - r`.+`
+      # - "*"
+    locations: # each location is a handlers
+      - path: "/"
+        returnType: static
+        return:
+          code: 200
+          headers:
+            Content-Type: text/html
+            Server: balicer
+          body: "<h1>quack quack!</h1>"
 
       # - path: "/lb"
       #   returnType: loadBalancing

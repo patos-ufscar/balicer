@@ -88,7 +88,6 @@ func ParseStaticReturn(ret map[string]interface{}) (*models.ReturnStatic, error)
 		Headers: headers,
 		Body: []byte(body),
 	}
-
 	
 	return &staticRet, nil
 }

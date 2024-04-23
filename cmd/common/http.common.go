@@ -18,8 +18,6 @@ func Bind(port uint16) (*net.Listener, error) {
 		return nil, fmt.Errorf("could not bind to port %d", port)
 	}
 
-	slog.Info(fmt.Sprintf("Listening on port %d", port))
-
 	return &l, nil
 }
 

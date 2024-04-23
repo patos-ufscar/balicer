@@ -22,8 +22,8 @@ type LocationConfigInput struct {
 	Return			map[string]interface{}		`yaml:"return"`
 }
 
-type ReturnStaticConfig struct {
-	Code			int							`yaml:"code"`
-	Headers			map[string]string			`yaml:"headers"`
-	Body			string						`yaml:"body"`
-}
+// type ReturnStaticConfig struct {
+// 	Code			int							`yaml:"code"`
+// 	Headers			map[string]string			`yaml:"headers"`
+// 	Body			string						`yaml:"body"`
+// }

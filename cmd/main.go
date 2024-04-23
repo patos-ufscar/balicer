@@ -16,7 +16,6 @@ import (
 var configPath string
 
 func init() {
-
 	flag.StringVar(&configPath, "configPath", "./defaultConf.yml", "the config.yml file path")
 	flag.Parse()
 
@@ -41,6 +40,8 @@ func main() {
 			panic("could not bind to port")
 		}
 
+		slog.Info(fmt.Sprintf("Listening on port %d", v.Port))
+
 		hs := []handlers.Handler{}
 		for _, locConf := range v.Locations {
 			h, err := handlers.HandlerFactory(locConf)
@@ -58,19 +59,6 @@ func main() {
 		)
 
 		go server.Serve(*lis)
-
-		// create new server for port and hosts regex
-		// iterate over location configs and append them
-		// serversSlice = append(servers, )
-
-		// server := servers.NewServer(v.Port, v.HostsRegs, )
-
-		// create new server for port and hosts regex
-		// iterate over location configs and append them
-		// serversSlice = append(servers, )
-
-		// we bind and pass the listener to the server "serve" method
-
 	}
 
 	for {
