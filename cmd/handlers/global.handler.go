@@ -1,27 +1,36 @@
 package handlers
 
 import (
+	"bytes"
 	"fmt"
-	"log/slog"
+	"io"
 	"net"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
 
+const(
+	READ_BUFFER_SIZE int32 = 32 * 1<<10
+	READ_DEADLINE_MS int32 = 100
+)
+
 
 func HandleGlobal(conn net.Conn, directory string) ([]byte, error) {
-	readBuffer := make([]byte, 8 * (1 << 10))
-	// readBuffer := [8 * (1 << 10)]byte{}
-	_, err := conn.Read(readBuffer)
+	conn.SetReadDeadline(time.Now().Add(time.Duration(READ_DEADLINE_MS) * time.Millisecond))
+	
+	readBuffer := make([]byte, READ_BUFFER_SIZE)
+	readBytes := new(bytes.Buffer)
+	_, err := io.CopyBuffer(readBytes, conn, readBuffer)
 	if err != nil {
-		slog.Error(fmt.Sprintf("Error reading request: %s", err.Error()))
-		os.Exit(1)
+		fmt.Println("Error reading request: ", err.Error())
+		return nil, err
 	}
 
-	strBody := strings.Split(string(readBuffer), "\r\n")
+	strBody := strings.Split(readBytes.String(), "\r\n")
 
 	request := [][]string{}
 	for _, v := range strBody {
