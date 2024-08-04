@@ -12,7 +12,6 @@ var log_set bool = false
 
 var TemplateAccountConfirmation string = "/srv/html/templates/account_confirmation.ptbr.html"
 
-
 func InitSlogger() {
 
 	if log_set {
@@ -20,18 +19,18 @@ func InitSlogger() {
 	}
 
 	levelsMap := map[string]slog.Level{
-		"DEBUG": slog.LevelDebug,
-		"INFO": slog.LevelInfo,
-		"WARN": slog.LevelWarn,
+		"DEBUG":   slog.LevelDebug,
+		"INFO":    slog.LevelInfo,
+		"WARN":    slog.LevelWarn,
 		"WARNING": slog.LevelWarn,
-		"ERROR": slog.LevelError,
+		"ERROR":   slog.LevelError,
 	}
 
 	logger := slog.New(slog.NewTextHandler(
 		os.Stdout,
 		&slog.HandlerOptions{
 			AddSource: true,
-			Level: levelsMap[LOG_LEVEL],
+			Level:     levelsMap[LOG_LEVEL],
 		},
 	))
 
@@ -76,14 +75,14 @@ func LoadHTMLTemplate(templateName string) *template.Template {
 }
 
 func IsSubset(subset []string, superset []string) bool {
-    checkMap := make(map[string]bool)
-    for _, element := range superset {
-        checkMap[element] = true
-    }
-    for _, value := range subset {
-        if !checkMap[value] {
-            return false // Return false if an element is not found in the superset
-        }
-    }
-    return true // Return true if all elements are found in the superset
+	checkMap := make(map[string]bool)
+	for _, element := range superset {
+		checkMap[element] = true
+	}
+	for _, value := range subset {
+		if !checkMap[value] {
+			return false // Return false if an element is not found in the superset
+		}
+	}
+	return true // Return true if all elements are found in the superset
 }

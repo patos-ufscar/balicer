@@ -1,5 +1,5 @@
 module github.com/patos-ufscar/http-web-server-example-go
 
-go 1.22.0
+go 1.22.3
 
-require gopkg.in/yaml.v2 v2.4.0 // indirect
+require gopkg.in/yaml.v2 v2.4.0

@@ -35,7 +35,7 @@ func ReplyString(conn net.Conn, msg string) error {
 }
 
 // func ReplyResponse(conn net.Conn, resp models.HttpResponse) error {
-	
+
 // }
 
 func ReplyOctetStream(conn net.Conn, msg string) error {

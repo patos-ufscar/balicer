@@ -13,15 +13,14 @@ import (
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
 
-const(
-	READ_BUFFER_SIZE int32 = 32 * 1<<10
+const (
+	READ_BUFFER_SIZE int32 = 32 * 1 << 10
 	READ_DEADLINE_MS int32 = 100
 )
 
-
 func HandleGlobal(conn net.Conn, directory string) ([]byte, error) {
 	conn.SetReadDeadline(time.Now().Add(time.Duration(READ_DEADLINE_MS) * time.Millisecond))
-	
+
 	readBuffer := make([]byte, READ_BUFFER_SIZE)
 	readBytes := new(bytes.Buffer)
 	_, err := io.CopyBuffer(readBytes, conn, readBuffer)
@@ -94,6 +93,6 @@ func HandleGlobal(conn net.Conn, directory string) ([]byte, error) {
 	}
 
 	err = utils.ReplyHTTP(conn, []byte("HTTP/1.1 404 NOT FOUND\r\n\r\n"))
-	
+
 	return nil, err
 }

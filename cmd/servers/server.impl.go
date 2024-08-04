@@ -7,23 +7,22 @@ import (
 	"net"
 	"regexp"
 
-	"github.com/patos-ufscar/http-web-server-example-go/common"
 	"github.com/patos-ufscar/http-web-server-example-go/handlers"
 	"github.com/patos-ufscar/http-web-server-example-go/models"
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
 )
 
 type ServerImpl struct {
-	port					uint16
-	hostsRegs				[]regexp.Regexp
-	handlers				[]handlers.Handler
+	port      uint16
+	hostsRegs []regexp.Regexp
+	handlers  []handlers.Handler
 }
 
 func NewServer(port uint16, hostsRegs []regexp.Regexp, handlers []handlers.Handler) Server {
 	return &ServerImpl{
-		port: port,
+		port:      port,
 		hostsRegs: hostsRegs,
-		handlers: handlers,
+		handlers:  handlers,
 	}
 }
 
@@ -60,7 +59,7 @@ func (s *ServerImpl) Serve(lis net.Listener) {
 			continue
 		}
 
-		go func (conn net.Conn) {
+		go func(conn net.Conn) {
 			// Recover Func
 			defer func(conn net.Conn) {
 				// we re-reply in case of error (reply missing)
@@ -83,7 +82,7 @@ func (s *ServerImpl) Serve(lis net.Listener) {
 func (s *ServerImpl) HandleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	readBuffer := make([]byte, 8 * 1<<10)
+	readBuffer := make([]byte, 8*1<<10)
 	_, err := conn.Read(readBuffer)
 	if err != nil {
 		if err == io.EOF {
@@ -94,10 +93,7 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 		return
 	}
 
-	req, err := common.ParseBaseRequest(readBuffer)
-	if err != nil {
-		return
-	}
+	req := models.ParseBaseRequest(readBuffer)
 
 	if !s.ValidHost(req.Host) {
 		return
@@ -105,17 +101,14 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 
 	// TODO: Here would be TLS
 
-	req, err = common.ParseHttpRequest(readBuffer)
-	if err != nil {
-		return
-	}
+	req = models.ParseHttpRequest(readBuffer)
 
 	slog.Debug(fmt.Sprintf("req: %+v", req))
 
 	var rep models.HttpResponse
 	for _, v := range s.handlers {
 		if v.ValidPath(req.RequestURI) {
-			rep, err = v.Handle(*req)
+			rep, err = v.Handle(req)
 			if err != nil {
 				slog.Error(err.Error())
 				return

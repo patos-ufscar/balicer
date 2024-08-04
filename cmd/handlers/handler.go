@@ -8,8 +8,8 @@ import (
 )
 
 type Handler interface {
-	ValidPath(host string)						bool
-	Handle(req models.HttpRequest)				(models.HttpResponse, error)
+	ValidPath(host string) bool
+	Handle(req models.HttpRequest) (models.HttpResponse, error)
 }
 
 func HandlerFactory(locConf models.HandlerConfig) (Handler, error) {

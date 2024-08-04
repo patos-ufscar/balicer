@@ -15,10 +15,10 @@ import (
 func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 
 	data, err := os.ReadFile(configPath)
-    if err != nil {
+	if err != nil {
 		slog.Warn("could not read configPath, fallback to default")
 		return nil, err
-    }
+	}
 
 	// fmt.Println(string(data))
 
@@ -47,13 +47,13 @@ func ParseConfig(configPath string) ([]models.ServerConfig, error) {
 		locs := []models.HandlerConfig{}
 		for _, loc := range v.Locations {
 			locs = append(locs, models.HandlerConfig{
-				Path: loc.Path,
+				Path:       loc.Path,
 				ReturnType: loc.ReturnType,
-				Return: loc.Return,
+				Return:     loc.Return,
 			})
 		}
 		confs = append(confs, models.ServerConfig{
-			Port: v.Port,
+			Port:      v.Port,
 			HostsRegs: hostRegs,
 			Locations: locs,
 		})
@@ -80,35 +80,35 @@ func ParseStaticReturn(ret map[string]interface{}) (*models.ReturnStatic, error)
 	}
 
 	staticRet := models.ReturnStatic{
-		Code: code,
+		Code:    code,
 		Headers: headers,
-		Body: []byte(body),
+		Body:    []byte(body),
 	}
-	
+
 	return &staticRet, nil
 }
 
 func ConvertMap(input interface{}) (map[string]string, error) {
-    result := make(map[string]string)
+	result := make(map[string]string)
 
 	inputMap, ok := input.(map[interface{}]interface{})
 	if !ok {
 		return nil, errors.New("could not convert input to map[interface{}]interface{}")
 	}
 
-    for key, value := range inputMap {
-        // Perform type assertions
-        strKey, okKey := key.(string)
-        strValue, okValue := value.(string)
+	for key, value := range inputMap {
+		// Perform type assertions
+		strKey, okKey := key.(string)
+		strValue, okValue := value.(string)
 
-        // Check if both key and value are strings
-        if okKey && okValue {
-            result[strKey] = strValue
-        } else {
-            // If either key or value is not a string, return an error
-            return nil, fmt.Errorf("key or value is not a string")
-        }
-    }
+		// Check if both key and value are strings
+		if okKey && okValue {
+			result[strKey] = strValue
+		} else {
+			// If either key or value is not a string, return an error
+			return nil, fmt.Errorf("key or value is not a string")
+		}
+	}
 
-    return result, nil
+	return result, nil
 }

@@ -5,10 +5,6 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"net/textproto"
-	"strings"
-
-	"github.com/patos-ufscar/http-web-server-example-go/models"
 )
 
 func Bind(port uint16) (*net.Listener, error) {
@@ -24,58 +20,6 @@ func Bind(port uint16) (*net.Listener, error) {
 func ParseHeader(header string) (*http.Request, error) {
 
 	return nil, nil
-}
-
-func ParseBaseRequest(requestBytes []byte) (*models.HttpRequest, error) {
-	httpReqFrame := models.NewHttpRequest()
-
-	// fmt.Println(string(requestBytes))
-
-	lines := strings.Split(string(requestBytes), "\r\n")
-	// request := [][]string{}
-	for i, v := range lines {
-		if i == 0 {
-			words := strings.Split(v, " ")
-			httpReqFrame.Method = words[0]
-			httpReqFrame.RequestURI = words[1]
-			httpReqFrame.HTTPVersion = words[2]
-		} else if i == 1 {
-			words := strings.Split(v, " ")
-			httpReqFrame.Host = words[1]
-		}
-	}
-
-	return &httpReqFrame, nil
-}
-
-func ParseHttpRequest(requestBytes []byte) (*models.HttpRequest, error) {
-	httpReqFrame := models.NewHttpRequest()
-
-	// fmt.Println(string(requestBytes))
-
-	lines := strings.Split(string(requestBytes), "\r\n")
-	// request := [][]string{}
-	for i, v := range lines {
-		if i == 0 {
-			words := strings.Split(v, " ")
-			httpReqFrame.Method = words[0]
-			httpReqFrame.RequestURI = words[1]
-			httpReqFrame.HTTPVersion = words[2]
-		} else if i == 1 {
-			words := strings.Split(v, " ")
-			httpReqFrame.Host = words[1]
-		} else {
-			words := strings.SplitN(v, ": ", 2)
-			if len(words[0]) == len(v) {
-				continue
-			}
-
-			httpReqFrame.Headers[textproto.CanonicalMIMEHeaderKey(words[0])] = words[1]
-			// parseRequestLine(&httpReqFrame, words)
-		}
-	}
-
-	return &httpReqFrame, nil
 }
 
 // func parseRequestLine(frame *models.HttpRequest, words []string) error {

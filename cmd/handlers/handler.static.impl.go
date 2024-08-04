@@ -9,19 +9,19 @@ import (
 )
 
 type HandlerStaticImpl struct {
-	Path					string
-	StatusCode				int
-	Headers					map[string]string
-	Body					[]byte
+	Path       string
+	StatusCode int
+	Headers    map[string]string
+	Body       []byte
 }
 
 func NewHandlerStaticImpl(path string, ret models.ReturnStatic) Handler {
 	// headers := make(map[string]string)
 	return &HandlerStaticImpl{
-		Path: path,
+		Path:       path,
 		StatusCode: ret.Code,
-		Headers: ret.Headers,
-		Body: ret.Body,
+		Headers:    ret.Headers,
+		Body:       ret.Body,
 	}
 }
 

@@ -9,11 +9,11 @@ import (
 )
 
 type HttpResponse struct {
-	HTTPVersion								string
-	StatusCode								int
-	StatusText								string
-	Headers									map[string]string
-	Body									[]byte
+	HTTPVersion string
+	StatusCode  int
+	StatusText  string
+	Headers     map[string]string
+	Body        []byte
 }
 
 func NewHttpResponse() HttpResponse {
@@ -27,13 +27,13 @@ func (r HttpResponse) DumpResponse() []byte {
 
 	codeStr := strconv.Itoa(int(r.StatusCode))
 	respLines = append(
-		respLines, 
-		r.HTTPVersion + utils.SP + codeStr + utils.SP + r.StatusText,
+		respLines,
+		r.HTTPVersion+utils.SP+codeStr+utils.SP+r.StatusText,
 	)
 	for k, v := range r.Headers {
 		respLines = append(
-			respLines, 
-			textproto.CanonicalMIMEHeaderKey(k) + ":" + utils.SP + v,
+			respLines,
+			textproto.CanonicalMIMEHeaderKey(k)+":"+utils.SP+v,
 		)
 	}
 

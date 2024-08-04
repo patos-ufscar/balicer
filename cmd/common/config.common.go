@@ -13,7 +13,7 @@ func ParseHostConfig(hostStr string) regexp.Regexp {
 
 func ExtractRegExpFromHostStr(hostStr string) string {
 	if strings.HasPrefix(hostStr, "r`") && strings.HasSuffix(hostStr, "`") {
-		return hostStr[1+1:len(hostStr)-1]
+		return hostStr[1+1 : len(hostStr)-1]
 	}
 
 	switch hostStr {

@@ -1,25 +1,25 @@
 package cli
 
 type Conf struct {
-	Global			Global						`yaml:"global"`
-	Servers			[]ServerConfigInput				`yaml:"servers"`
+	Global  Global              `yaml:"global"`
+	Servers []ServerConfigInput `yaml:"servers"`
 }
 
 type Global struct {
-	LogLevel		string						`yaml:"logLevel"`
-	BufferSize		string						`yaml:"bufferSize"`
+	LogLevel   string `yaml:"logLevel"`
+	BufferSize string `yaml:"bufferSize"`
 }
 
 type ServerConfigInput struct {
-	Port			uint16						`yaml:"port"`
-	HostsRegs		[]string					`yaml:"hosts"`
-	Locations		[]LocationConfigInput			`yaml:"locations"`
+	Port      uint16                `yaml:"port"`
+	HostsRegs []string              `yaml:"hosts"`
+	Locations []LocationConfigInput `yaml:"locations"`
 }
 
 type LocationConfigInput struct {
-	Path			string						`yaml:"path"`
-	ReturnType		string						`yaml:"returnType"`
-	Return			map[string]interface{}		`yaml:"return"`
+	Path       string                 `yaml:"path"`
+	ReturnType string                 `yaml:"returnType"`
+	Return     map[string]interface{} `yaml:"return"`
 }
 
 // type ReturnStaticConfig struct {

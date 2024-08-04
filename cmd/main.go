@@ -88,7 +88,7 @@ func main() {
 // 				p.ServeHTTP(w, r)
 // 			}
 //         }
-        
+
 //         proxy := httputil.NewSingleHostReverseProxy(remote)
 //         http.HandleFunc("/", handler(proxy))
 //         err = http.ListenAndServe(":8080", nil)
