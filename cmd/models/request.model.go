@@ -17,7 +17,6 @@ type HttpRequest struct {
 	Method      string
 	RequestURI  string
 	HTTPVersion string
-	Host        string //remove
 	Headers     map[string]string
 	Body        []byte
 }
@@ -26,25 +25,6 @@ func NewEmptyHttpRequest() HttpRequest {
 	var httpReq HttpRequest
 	httpReq.Headers = make(map[string]string)
 	return httpReq
-}
-
-func ParseBaseRequest(r []byte) HttpRequest {
-	req := NewEmptyHttpRequest()
-
-	lines := strings.Split(string(r), CRLF)
-	for i, v := range lines {
-		if i == 0 {
-			words := strings.Split(v, " ")
-			req.Method = words[0]
-			req.RequestURI = words[1]
-			req.HTTPVersion = words[2]
-		} else if i == 1 {
-			words := strings.Split(v, " ")
-			req.Host = words[1]
-		}
-	}
-
-	return req
 }
 
 func ParseHttpRequest(requestBytes []byte) HttpRequest {

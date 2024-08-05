@@ -2,14 +2,19 @@ package servers
 
 import (
 	"fmt"
-	"io"
 	"log/slog"
 	"net"
 	"regexp"
 
+	"github.com/patos-ufscar/http-web-server-example-go/common"
 	"github.com/patos-ufscar/http-web-server-example-go/handlers"
 	"github.com/patos-ufscar/http-web-server-example-go/models"
 	"github.com/patos-ufscar/http-web-server-example-go/utils"
+)
+
+const (
+	READ_BUFFER_SIZE int32 = 32 * 1 << 10
+	READ_DEADLINE_MS int32 = 100
 )
 
 type ServerImpl struct {
@@ -59,49 +64,46 @@ func (s *ServerImpl) Serve(lis net.Listener) {
 			continue
 		}
 
-		go func(conn net.Conn) {
-			// Recover Func
-			defer func(conn net.Conn) {
-				// we re-reply in case of error (reply missing)
-				r := recover()
-				if r != nil {
-					slog.Error(fmt.Sprint("Recovered from: ", r))
-					err := utils.Reply502(conn)
-					if err != nil {
-						slog.Error(fmt.Sprintf("Could not reply: %s", err.Error()))
-					}
-				}
-			}(conn)
+		go s.HandleConnection(conn)
 
-			go s.HandleConnection(conn)
+		// go func(conn net.Conn) {
+		// 	// Recover Func
+		// 	defer func(conn net.Conn) {
+		// 		// we re-reply in case of error (reply missing)
+		// 		r := recover()
+		// 		if r != nil {
+		// 			slog.Error(fmt.Sprint("Recovered from: ", r))
+		// 			err := utils.Reply502(conn)
+		// 			if err != nil {
+		// 				slog.Error(fmt.Sprintf("Could not reply: %s", err.Error()))
+		// 			}
+		// 		}
+		// 	}(conn)
 
-		}(conn)
+		// 	go s.HandleConnection(conn)
+
+		// }(conn)
 	}
 }
 
 func (s *ServerImpl) HandleConnection(conn net.Conn) {
 	defer conn.Close()
+	// conn.SetReadDeadline(time.Now().Add(time.Duration(READ_DEADLINE_MS) * time.Millisecond))
 
-	readBuffer := make([]byte, 8*1<<10)
-	_, err := conn.Read(readBuffer)
+	readBytes, err := common.ReadBytesFromConn(conn)
 	if err != nil {
-		if err == io.EOF {
-			slog.Warn("Connection closed by the server")
-		} else {
-			slog.Error(err.Error())
-		}
+		slog.Error(err.Error())
 		return
 	}
 
-	req := models.ParseBaseRequest(readBuffer)
+	req := models.ParseHttpRequest(readBytes)
 
-	if !s.ValidHost(req.Host) {
+	host, ok := req.Headers["Host"]
+	if !ok || !s.ValidHost(host) {
 		return
 	}
 
 	// TODO: Here would be TLS
-
-	req = models.ParseHttpRequest(readBuffer)
 
 	slog.Debug(fmt.Sprintf("req: %+v", req))
 
@@ -120,6 +122,8 @@ func (s *ServerImpl) HandleConnection(conn net.Conn) {
 
 	slog.Info(fmt.Sprintf("%s %s %s %d", req.Method, req.RequestURI, req.HTTPVersion, rep.StatusCode))
 
+	resp := rep.DumpResponse()
+	fmt.Printf("resp: %v\n", string(resp))
 	err = utils.ReplyHTTP(conn, rep.DumpResponse())
 	if err != nil {
 		slog.Error(err.Error())

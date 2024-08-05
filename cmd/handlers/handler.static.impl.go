@@ -30,7 +30,6 @@ func (h *HandlerStaticImpl) ValidPath(path string) bool {
 }
 
 func (h *HandlerStaticImpl) Handle(req models.HttpRequest) (models.HttpResponse, error) {
-
 	resp := models.NewHttpResponse()
 
 	for k, v := range h.Headers {

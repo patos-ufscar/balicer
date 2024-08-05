@@ -7,6 +7,28 @@ import (
 	"net/http"
 )
 
+const (
+	READ_BUFFER_SIZE int32 = 32 * 1 << 10
+	READ_DEADLINE_MS int32 = 100
+)
+
+func ReadBytesFromConn(c net.Conn) ([]byte, error) {
+	// we do NOT use CopyBuffer (or Copy) because it hangs (waits fot EOF)
+	readBuffer := make([]byte, READ_BUFFER_SIZE)
+	// readBytes := new(bytes.Buffer)
+	// n, err := io.CopyBuffer(readBytes, c, readBuffer)
+	n, err := c.Read(readBuffer)
+	if err != nil {
+		fmt.Println("Error reading request: ", err.Error())
+		if n == 0 {
+			return nil, err
+		}
+	}
+
+	// return readBytes.Bytes(), nil
+	return readBuffer, nil
+}
+
 func Bind(port uint16) (*net.Listener, error) {
 	l, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", port))
 	if err != nil {
