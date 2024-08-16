@@ -31,7 +31,7 @@ func ParseHttpRequest(requestBytes []byte) HttpRequest {
 	req := NewEmptyHttpRequest()
 
 	// seperate in reqHeader and reqBody
-	blocks := bytes.SplitN(requestBytes, []byte(DOUBLE_CRLF), 3)
+	blocks := bytes.SplitN(requestBytes, []byte(DOUBLE_CRLF), 2)
 	// if len(blocks) >= 1 {
 	// 	finalBlock := blocks[len(blocks)-1]
 	// 	finalBlockLen := len(finalBlock)

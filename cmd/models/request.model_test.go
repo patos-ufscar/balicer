@@ -59,12 +59,12 @@ func TestParseHttpRequest(t *testing.T) {
 		},
 		{
 			name: "with body",
-			args: args{requestBytes: []byte("GET /index.html HTTP/1.1\r\nHost: localhost:8080\r\n\r\nexample-body\r\n\r\n")},
+			args: args{requestBytes: []byte("GET /index.html HTTP/1.1\r\nHost: localhost:8080\r\n\r\nexample-body")},
 			want: withBody,
 		},
 		{
 			name: "with contentLen",
-			args: args{requestBytes: []byte("GET /index.html HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 16\r\n\r\nexample-body-lenCUT\r\n\r\n")},
+			args: args{requestBytes: []byte("GET /index.html HTTP/1.1\r\nHost: localhost:8080\r\nContent-Length: 16\r\n\r\nexample-body-lenCUT")},
 			want: withContentLen,
 		},
 	}
